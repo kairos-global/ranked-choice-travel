@@ -92,9 +92,14 @@ TripPoll 95 is a retro-themed web application that enables users to create and p
 
 ## Changelog
 
-Changelog:
-- June 30, 2025. Initial setup
+- June 30, 2025: Initial TripPoll 95 setup with ranked choice voting
+- June 30, 2025: Completed UI styling - removed rainbow gradients, implemented Space Grotesk font with retro Windows 95 aesthetic
+- June 30, 2025: Updated form placeholders to casual language ("Where should we go next?", "whats the vibe?")
+- June 30, 2025: Final styling polish - solid blue colors, classic 90s interface elements
 
 ## User Preferences
 
-Preferred communication style: Simple, everyday language.
+- Preferred communication style: Simple, everyday language
+- Design preference: No rainbow gradients, solid colors preferred
+- Font choice: Space Grotesk for main text, Press Start 2P for logo only
+- UI style: Classic TripPoll 95 Windows 95 aesthetic with modern functionality
