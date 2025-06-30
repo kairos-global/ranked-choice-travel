@@ -251,14 +251,15 @@
 .retro-form-row {
   display: flex;
   align-items: center;
-  margin: 4px 0;
-  gap: 8px;
+  margin: 12px 0;
+  gap: 16px;
 }
 
 .retro-form-row label {
-  min-width: 80px;
-  font-weight: bold;
-  color: black;
+  min-width: 120px;
+  font-weight: 600;
+  color: var(--text-primary);
+  font-size: 14px;
 }
 
 .retro-nav-tabs {
@@ -293,14 +294,15 @@
 }
 
 .retro-status-bar {
-  background: var(--retro-gray);
-  border-top: 1px solid var(--retro-gray-dark);
-  padding: 4px 8px;
-  font-size: 10px;
+  background: hsl(220, 16%, 98%);
+  border-top: 1px solid hsl(220, 13%, 91%);
+  padding: 12px 24px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: black;
+  color: var(--text-secondary);
+  border-radius: 0 0 16px 16px;
 }
 
 .retro-logo {
@@ -354,7 +356,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--retro-teal);
+  background: linear-gradient(135deg, var(--game-bg-start) 0%, var(--game-bg-end) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -363,18 +365,23 @@
 }
 
 .retro-loading-window {
-  background: var(--retro-gray);
-  border: 2px outset var(--retro-gray);
-  padding: 20px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 40px;
   text-align: center;
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
+  box-shadow: var(--card-shadow);
+  max-width: 400px;
+  width: 90%;
 }
 
 .retro-loading-title {
   font-family: 'Press Start 2P', monospace;
-  font-size: 16px;
-  color: var(--retro-blue);
-  margin-bottom: 20px;
+  font-size: 24px;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 32px;
 }
 
 .retro-drag-item {
@@ -460,19 +467,51 @@
 
 @media (max-width: 768px) {
   .retro-desktop {
-    padding: 10px;
+    padding: 16px;
+    align-items: flex-start;
   }
   
   .retro-window {
-    margin: 10px auto;
+    margin: 0;
+    max-width: 100%;
+    min-height: auto;
+  }
+  
+  .retro-window-content {
+    padding: 24px;
   }
   
   .retro-form-row {
     flex-direction: column;
     align-items: flex-start;
+    gap: 8px;
   }
   
   .retro-form-row label {
     min-width: auto;
+  }
+  
+  .retro-logo {
+    font-size: 20px;
+  }
+  
+  .retro-nav-tabs {
+    flex-wrap: wrap;
+  }
+  
+  .retro-nav-tab {
+    flex: 1;
+    min-width: 120px;
+  }
+  
+  .retro-drag-item {
+    padding: 12px;
+    gap: 12px;
+  }
+  
+  .retro-rank-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
   }
 }

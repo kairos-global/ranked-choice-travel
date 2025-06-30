@@ -269,37 +269,26 @@ export default function Home() {
             <div className="retro-logo">About TripPoll 95</div>
             
             <div className="retro-fieldset">
-              <legend>What is RankedChoiceTravel?</legend>
-              <div style={{ color: 'black', lineHeight: '1.4', marginBottom: '12px' }}>
-                RankedChoiceTravel is a retro-themed web application for creating and sharing ranked-choice voting polls specifically designed for travel destinations.
+              <legend>What is TripPoll 95?</legend>
+              <div style={{ color: 'var(--text-primary)', lineHeight: '1.6', marginBottom: '16px' }}>
+                A fun retro-style app for deciding where to go with your friends! No more endless group chats trying to pick a destination.
               </div>
-              <div style={{ color: 'black', lineHeight: '1.4' }}>
-                Using instant-runoff voting (IRV), it ensures that the winning destination truly represents the group's preferences, not just the plurality choice.
+              <div style={{ color: 'var(--text-primary)', lineHeight: '1.6' }}>
+                Everyone ranks their preferences, and our smart voting system finds the option that makes the most people happy.
               </div>
             </div>
 
             <div className="retro-fieldset">
               <legend>How It Works</legend>
-              <div style={{ color: 'black', lineHeight: '1.4' }}>
-                <strong>1. Create a Poll:</strong> Add 3-6 travel destinations and customize your poll settings.<br/>
-                <strong>2. Share the Link:</strong> Send the voting link to your travel companions.<br/>
-                <strong>3. Vote by Ranking:</strong> Voters drag destinations to rank them by preference.<br/>
-                <strong>4. View Results:</strong> See instant-runoff results with detailed round-by-round breakdowns.
+              <div style={{ color: 'var(--text-primary)', lineHeight: '1.6' }}>
+                <strong>1. Create a Poll:</strong> List 3-6 places you're considering<br/>
+                <strong>2. Share with Friends:</strong> Send them the voting link<br/>
+                <strong>3. Everyone Votes:</strong> Drag and drop to rank preferences<br/>
+                <strong>4. See Results:</strong> Find out where you're going!
               </div>
             </div>
 
-            <div className="retro-fieldset">
-              <legend>Features</legend>
-              <div style={{ color: 'black', lineHeight: '1.4' }}>
-                • Authentic Windows 95-style interface<br/>
-                • Drag-and-drop ranking system<br/>
-                • Instant-runoff voting algorithm<br/>
-                • No registration required<br/>
-                • Mobile-friendly design<br/>
-                • Real-time results<br/>
-                • Shareable poll links
-              </div>
-            </div>
+
           </div>
         )}
       </RetroWindow>
