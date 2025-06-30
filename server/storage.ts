@@ -108,4 +108,19 @@ export class MemStorage implements IStorage {
   }
 }
 
-export const storage = new MemStorage();
+// Use PostgreSQL storage if DATABASE_URL is available, otherwise fallback to memory
+let storage: IStorage;
+
+try {
+  if (process.env.DATABASE_URL) {
+    const { DbStorage } = await import("./db-storage");
+    storage = new DbStorage();
+  } else {
+    storage = new MemStorage();
+  }
+} catch (error) {
+  console.warn("Failed to initialize database storage, falling back to memory storage:", error);
+  storage = new MemStorage();
+}
+
+export { storage };
