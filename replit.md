@@ -99,6 +99,9 @@ TripPoll 95 is a retro-themed web application that enables users to create and p
 - June 30, 2025: Fixed mobile drag-and-drop functionality with touch events
 - June 30, 2025: Added Visit buttons next to Copy buttons for voting and results links
 - June 30, 2025: Project deployed to GitHub and ready for production
+- June 30, 2025: Added PostgreSQL database integration with Neon for persistent storage
+- June 30, 2025: Created "Our Polls" tab showing all polls with delete functionality for creators
+- June 30, 2025: Added purple certification sticker "Certified: It's Purple™ Version" with floating animation
 
 ## User Preferences
 
