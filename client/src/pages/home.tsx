@@ -1,15 +1,16 @@
 import { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
 import { copyToClipboard, generateShareableUrl } from "@/lib/utils";
 import RetroWindow from "@/components/retro-window";
-import type { InsertPoll } from "@shared/schema";
+import type { InsertPoll, Poll } from "@shared/schema";
 
 export default function Home() {
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState('create');
   
   // Form state
@@ -21,6 +22,24 @@ export default function Home() {
   
   // Poll creation result
   const [createdPoll, setCreatedPoll] = useState<{ poll: any; adminKey: string } | null>(null);
+  
+  // Store admin keys for created polls in localStorage
+  const [adminKeys, setAdminKeys] = useState<Record<string, string>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('tripPollAdminKeys') || '{}');
+    } catch {
+      return {};
+    }
+  });
+
+  // Query to fetch all polls
+  const { data: polls = [], isLoading: pollsLoading } = useQuery({
+    queryKey: ['/api/polls'],
+    queryFn: async () => {
+      const response = await apiRequest("GET", "/api/polls");
+      return response.json() as Promise<Poll[]>;
+    },
+  });
 
   const createPollMutation = useMutation({
     mutationFn: async (pollData: InsertPoll) => {
@@ -29,6 +48,14 @@ export default function Home() {
     },
     onSuccess: (data) => {
       setCreatedPoll(data);
+      // Save admin key to localStorage
+      const newAdminKeys = { ...adminKeys, [data.poll.id]: data.adminKey };
+      setAdminKeys(newAdminKeys);
+      localStorage.setItem('tripPollAdminKeys', JSON.stringify(newAdminKeys));
+      
+      // Invalidate polls query to refresh the list
+      queryClient.invalidateQueries({ queryKey: ['/api/polls'] });
+      
       toast({
         title: "Poll Created!",
         description: "Your poll has been created successfully.",
@@ -38,6 +65,35 @@ export default function Home() {
       toast({
         title: "Error",
         description: "Failed to create poll. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deletePollMutation = useMutation({
+    mutationFn: async ({ id, adminKey }: { id: string; adminKey: string }) => {
+      const response = await apiRequest("DELETE", `/api/polls/${id}`, { adminKey });
+      return response.json();
+    },
+    onSuccess: (_, { id }) => {
+      // Remove admin key from localStorage
+      const newAdminKeys = { ...adminKeys };
+      delete newAdminKeys[id];
+      setAdminKeys(newAdminKeys);
+      localStorage.setItem('tripPollAdminKeys', JSON.stringify(newAdminKeys));
+      
+      // Invalidate polls query to refresh the list
+      queryClient.invalidateQueries({ queryKey: ['/api/polls'] });
+      
+      toast({
+        title: "Poll Deleted",
+        description: "Poll has been successfully deleted.",
+      });
+    },
+    onError: () => {
+      toast({
+        title: "Error",
+        description: "Failed to delete poll. Please try again.",
         variant: "destructive",
       });
     },
@@ -124,6 +180,12 @@ export default function Home() {
             onClick={() => setActiveTab('create')}
           >
             Create Poll
+          </div>
+          <div 
+            className={`retro-nav-tab ${activeTab === 'polls' ? 'active' : ''}`}
+            onClick={() => setActiveTab('polls')}
+          >
+            Our Polls
           </div>
           <div 
             className={`retro-nav-tab ${activeTab === 'about' ? 'active' : ''}`}
@@ -270,6 +332,98 @@ export default function Home() {
                   >
                     Visit
                   </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {activeTab === 'polls' && (
+          <div className="retro-window-content">
+            <div className="retro-logo">Our Polls</div>
+            
+            {pollsLoading ? (
+              <div className="retro-fieldset">
+                <legend>Loading...</legend>
+                <div style={{ color: 'var(--text-primary)', textAlign: 'center', padding: '20px' }}>
+                  Loading polls...
+                </div>
+              </div>
+            ) : polls.length === 0 ? (
+              <div className="retro-fieldset">
+                <legend>No Polls Found</legend>
+                <div style={{ color: 'var(--text-primary)', textAlign: 'center', padding: '20px' }}>
+                  No polls created yet. Create your first poll in the "Create Poll" tab!
+                </div>
+              </div>
+            ) : (
+              <div className="retro-fieldset">
+                <legend>All Polls ({polls.length})</legend>
+                <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
+                  {polls.map((poll) => {
+                    const isOwnPoll = adminKeys[poll.id];
+                    return (
+                      <div key={poll.id} className="retro-form-row" style={{ 
+                        padding: '12px', 
+                        border: '1px solid var(--border-color)', 
+                        marginBottom: '8px',
+                        backgroundColor: isOwnPoll ? 'rgba(0, 100, 200, 0.1)' : 'transparent'
+                      }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                          <div style={{ flex: 1 }}>
+                            <div style={{ fontWeight: 'bold', color: 'var(--text-primary)', marginBottom: '4px' }}>
+                              {poll.title} {isOwnPoll && <span style={{ color: 'blue', fontSize: '12px' }}>(You created this)</span>}
+                            </div>
+                            {poll.description && (
+                              <div style={{ color: 'var(--text-secondary)', fontSize: '14px', marginBottom: '4px' }}>
+                                {poll.description}
+                              </div>
+                            )}
+                            <div style={{ color: 'var(--text-secondary)', fontSize: '12px' }}>
+                              {poll.options.length} options • Created {new Date(poll.createdAt).toLocaleDateString()}
+                              {poll.closed && <span style={{ color: 'red' }}> • CLOSED</span>}
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', gap: '8px', flexShrink: 0 }}>
+                            <button 
+                              className="retro-button"
+                              onClick={() => setLocation(`/poll/${poll.id}`)}
+                              style={{ fontSize: '12px', padding: '4px 8px' }}
+                            >
+                              Vote
+                            </button>
+                            <button 
+                              className="retro-button"
+                              onClick={() => setLocation(`/results/${poll.id}`)}
+                              style={{ fontSize: '12px', padding: '4px 8px' }}
+                            >
+                              Results
+                            </button>
+                            {isOwnPoll && (
+                              <button 
+                                className="retro-button"
+                                onClick={() => {
+                                  if (confirm('Are you sure you want to delete this poll? This action cannot be undone.')) {
+                                    deletePollMutation.mutate({ id: poll.id, adminKey: adminKeys[poll.id] });
+                                  }
+                                }}
+                                disabled={deletePollMutation.isPending}
+                                style={{ 
+                                  fontSize: '12px', 
+                                  padding: '4px 8px', 
+                                  backgroundColor: '#c42', 
+                                  color: 'white',
+                                  opacity: deletePollMutation.isPending ? 0.5 : 1
+                                }}
+                              >
+                                {deletePollMutation.isPending ? 'Deleting...' : 'Delete'}
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             )}
