@@ -145,7 +145,7 @@ export default function Home() {
                   type="text" 
                   id="pollTitle" 
                   className="retro-input" 
-                  placeholder="Where should we go for vacation?"
+                  placeholder="Where should we go next?"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
                 />
@@ -156,7 +156,7 @@ export default function Home() {
                   type="text" 
                   id="pollDescription" 
                   className="retro-input" 
-                  placeholder="Help us choose our next travel destination!"
+                  placeholder="whats the vibe?"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                 />
