@@ -6,6 +6,8 @@ export interface IStorage {
   getPoll(id: string): Promise<Poll | undefined>;
   updatePoll(id: string, updates: Partial<InsertPoll>): Promise<Poll | undefined>;
   closePoll(id: string, adminKey: string): Promise<boolean>;
+  listPolls(): Promise<Poll[]>;
+  deletePoll(id: string, adminKey: string): Promise<boolean>;
   
   // Vote operations
   createVote(vote: InsertVote, voterIp?: string): Promise<Vote>;
@@ -97,6 +99,33 @@ export class MemStorage implements IStorage {
   async hasVoted(pollId: string, voterIp: string): Promise<boolean> {
     const pollVoters = this.voterIps.get(pollId);
     return pollVoters?.has(voterIp) || false;
+  }
+
+  async listPolls(): Promise<Poll[]> {
+    return Array.from(this.polls.values());
+  }
+
+  async deletePoll(id: string, adminKey: string): Promise<boolean> {
+    const poll = this.polls.get(id);
+    if (!poll || poll.adminKey !== adminKey) {
+      return false;
+    }
+
+    // Delete poll and related data
+    this.polls.delete(id);
+    this.adminKeys.delete(id);
+    this.voterIps.delete(id);
+    
+    // Delete all votes for this poll
+    const votesToDelete = [];
+    for (const [voteId, vote] of this.votes) {
+      if (vote.pollId === id) {
+        votesToDelete.push(voteId);
+      }
+    }
+    votesToDelete.forEach(voteId => this.votes.delete(voteId));
+    
+    return true;
   }
 
   private generatePollId(): string {

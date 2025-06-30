@@ -76,6 +76,26 @@ export class DbStorage implements IStorage {
     return voteList.length > 0;
   }
 
+  async listPolls(): Promise<Poll[]> {
+    return await db.select().from(polls);
+  }
+
+  async deletePoll(id: string, adminKey: string): Promise<boolean> {
+    const [poll] = await db.select().from(polls).where(eq(polls.id, id));
+    
+    if (!poll || poll.adminKey !== adminKey) {
+      return false;
+    }
+
+    // Delete all votes for this poll first (foreign key constraint)
+    await db.delete(votes).where(eq(votes.pollId, id));
+    
+    // Delete the poll
+    await db.delete(polls).where(eq(polls.id, id));
+    
+    return true;
+  }
+
   private generatePollId(): string {
     return "TRP95-" + Math.random().toString(36).substr(2, 6).toUpperCase();
   }

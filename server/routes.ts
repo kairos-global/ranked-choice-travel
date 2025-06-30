@@ -136,6 +136,34 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // List all polls
+  app.get("/api/polls", async (req, res) => {
+    try {
+      const polls = await storage.listPolls();
+      // Remove admin keys from public poll listing
+      const publicPolls = polls.map(({ adminKey, ...poll }) => poll);
+      res.json(publicPolls);
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
+  // Delete poll (admin only)
+  app.delete("/api/polls/:id", async (req, res) => {
+    try {
+      const { adminKey } = req.body;
+      const success = await storage.deletePoll(req.params.id, adminKey);
+      
+      if (!success) {
+        return res.status(403).json({ message: "Invalid admin key or poll not found" });
+      }
+      
+      res.json({ message: "Poll deleted successfully" });
+    } catch (error) {
+      res.status(500).json({ message: "Server error" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }
