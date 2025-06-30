@@ -246,6 +246,12 @@ export default function Home() {
                   <button className="retro-button" onClick={() => handleCopyLink('vote')}>
                     Copy
                   </button>
+                  <button 
+                    className="retro-button" 
+                    onClick={() => window.open(generateShareableUrl(createdPoll.poll.id, 'vote'), '_blank')}
+                  >
+                    Visit
+                  </button>
                 </div>
                 <div className="retro-form-row">
                   <label>Results Link:</label>
@@ -257,6 +263,12 @@ export default function Home() {
                   />
                   <button className="retro-button" onClick={() => handleCopyLink('results')}>
                     Copy
+                  </button>
+                  <button 
+                    className="retro-button" 
+                    onClick={() => window.open(generateShareableUrl(createdPoll.poll.id, 'results', createdPoll.adminKey), '_blank')}
+                  >
+                    Visit
                   </button>
                 </div>
               </div>
