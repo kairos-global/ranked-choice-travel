@@ -352,9 +352,8 @@ export default function Home() {
             ) : polls.length === 0 ? (
               <div className="retro-fieldset">
                 <legend>No Polls Found</legend>
-                <div style={{ color: 'var(--text-primary)', textAlign: 'center', padding: '20px' }}>
-                  No polls created yet. Create your first poll in the "Create Poll" tab!
-                </div>
+                <div style={{ color: 'var(--text-primary)', textAlign: 'center', padding: '20px' }}>There is no polls yet.
+                Create a poll in the "Create Poll" tab!</div>
               </div>
             ) : (
               <div className="retro-fieldset">
