@@ -1,8 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 :root {
   --background: hsl(0, 0%, 100%);
@@ -26,16 +26,23 @@
   --ring: hsl(20, 14.3%, 4.1%);
   --radius: 0.5rem;
   
-  /* Retro 90s Colors */
-  --retro-gray: hsl(0, 0%, 75%);
-  --retro-gray-dark: hsl(0, 0%, 50%);
-  --retro-blue: hsl(240, 100%, 50%);
-  --retro-blue-light: hsl(210, 100%, 60%);
-  --retro-green: hsl(120, 100%, 25%);
-  --retro-green-light: hsl(120, 100%, 50%);
-  --retro-red: hsl(0, 100%, 50%);
-  --retro-teal: hsl(180, 100%, 25%);
-  --retro-teal-light: hsl(180, 65%, 65%);
+  /* Gamified UI Colors */
+  --game-bg-start: hsl(195, 100%, 45%);
+  --game-bg-end: hsl(250, 100%, 35%);
+  --card-bg: hsl(0, 0%, 100%);
+  --card-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+  --card-hover-shadow: 0 12px 48px rgba(0, 0, 0, 0.18);
+  --accent-blue: hsl(210, 100%, 60%);
+  --accent-purple: hsl(280, 100%, 65%);
+  --accent-orange: hsl(25, 100%, 60%);
+  --accent-green: hsl(140, 60%, 50%);
+  --accent-red: hsl(350, 85%, 60%);
+  --text-primary: hsl(220, 15%, 25%);
+  --text-secondary: hsl(220, 10%, 45%);
+  --button-primary: linear-gradient(135deg, hsl(210, 100%, 60%) 0%, hsl(250, 100%, 65%) 100%);
+  --button-secondary: linear-gradient(135deg, hsl(0, 0%, 95%) 0%, hsl(0, 0%, 88%) 100%);
+  --button-success: linear-gradient(135deg, hsl(140, 60%, 50%) 0%, hsl(120, 70%, 45%) 100%);
+  --button-danger: linear-gradient(135deg, hsl(350, 85%, 60%) 0%, hsl(0, 80%, 55%) 100%);
 }
 
 .dark {
@@ -68,136 +75,177 @@
 
   body {
     @apply font-sans antialiased;
-    font-family: 'MS Sans Serif', sans-serif;
-    font-size: 11px;
-    background: var(--retro-teal);
-    background-image: 
-      radial-gradient(circle at 25% 25%, var(--retro-teal-light) 0%, transparent 50%),
-      radial-gradient(circle at 75% 75%, hsl(180, 85%, 75%) 0%, transparent 50%);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-size: 14px;
+    background: linear-gradient(135deg, var(--game-bg-start) 0%, var(--game-bg-end) 100%);
+    background-attachment: fixed;
     min-height: 100vh;
     overflow-x: hidden;
+    color: var(--text-primary);
   }
 }
 
-/* Retro 90s Styles */
+/* Gamified UI Styles */
 .retro-desktop {
   min-height: 100vh;
   position: relative;
-  padding: 20px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .retro-window {
-  background: var(--retro-gray);
-  border: 2px outset var(--retro-gray);
-  box-shadow: 4px 4px 8px rgba(0,0,0,0.3);
-  margin: 20px auto;
-  max-width: 800px;
-  min-height: 500px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  margin: 0 auto;
+  max-width: 900px;
+  min-height: 600px;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.retro-window:hover {
+  box-shadow: var(--card-hover-shadow);
 }
 
 .retro-window-header {
-  background: linear-gradient(90deg, var(--retro-blue) 0%, var(--retro-blue-light) 100%);
+  background: var(--button-primary);
   color: white;
-  padding: 4px 8px;
-  font-weight: bold;
-  font-size: 11px;
+  padding: 16px 24px;
+  font-weight: 600;
+  font-size: 18px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--retro-gray-dark);
+  border-bottom: none;
 }
 
 .retro-window-controls {
   display: flex;
-  gap: 2px;
+  gap: 8px;
 }
 
 .retro-window-control {
-  width: 16px;
-  height: 14px;
-  border: 1px outset var(--retro-gray);
-  background: var(--retro-gray);
-  font-size: 8px;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  font-size: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  color: black;
+  color: white;
+  transition: background 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.retro-window-control:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .retro-window-control:active {
-  border: 1px inset var(--retro-gray);
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .retro-window-content {
-  padding: 12px;
-  background: var(--retro-gray);
-  min-height: 400px;
+  padding: 32px;
+  background: var(--card-bg);
+  min-height: 500px;
 }
 
 .retro-button {
-  background: var(--retro-gray);
-  border: 2px outset var(--retro-gray);
-  padding: 4px 12px;
-  font-size: 11px;
-  font-weight: bold;
+  background: var(--button-secondary);
+  border: none;
+  border-radius: 8px;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  margin: 2px;
-  min-width: 75px;
-  color: black;
+  margin: 4px;
+  min-width: 120px;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .retro-button:hover {
-  background: hsl(0, 0%, 82%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.15);
 }
 
 .retro-button:active {
-  border: 2px inset var(--retro-gray);
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .retro-button.primary {
-  background: var(--retro-blue);
+  background: var(--button-primary);
   color: white;
-  border: 2px outset var(--retro-blue);
 }
 
 .retro-button.primary:hover {
-  background: var(--retro-blue-light);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(66, 153, 225, 0.4);
 }
 
 .retro-button.danger {
-  background: var(--retro-red);
+  background: var(--button-danger);
   color: white;
-  border: 2px outset var(--retro-red);
+}
+
+.retro-button.danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+}
+
+.retro-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 .retro-input {
-  border: 2px inset var(--retro-gray);
-  padding: 4px;
-  font-size: 11px;
+  border: 2px solid hsl(220, 13%, 91%);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 14px;
   background: white;
   width: 100%;
-  margin: 2px 0;
-  color: black;
+  margin: 8px 0;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
 }
 
 .retro-input:focus {
-  outline: 1px dotted #000000;
-  outline-offset: -2px;
+  outline: none;
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.retro-input::placeholder {
+  color: var(--text-secondary);
 }
 
 .retro-fieldset {
-  border: 2px groove var(--retro-gray);
-  margin: 8px 0;
-  padding: 8px;
-  background: var(--retro-gray);
+  border: none;
+  border-radius: 12px;
+  margin: 16px 0;
+  padding: 24px;
+  background: hsl(220, 16%, 98%);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
 }
 
 .retro-fieldset legend {
-  font-weight: bold;
-  padding: 0 4px;
-  background: var(--retro-gray);
-  color: black;
+  font-weight: 700;
+  font-size: 18px;
+  padding: 0 12px;
+  background: hsl(220, 16%, 98%);
+  color: var(--text-primary);
+  margin-bottom: 16px;
 }
 
 .retro-form-row {
@@ -215,29 +263,33 @@
 
 .retro-nav-tabs {
   display: flex;
-  background: var(--retro-gray);
-  border-bottom: 1px solid var(--retro-gray-dark);
+  background: hsl(220, 16%, 98%);
+  border-radius: 12px 12px 0 0;
+  padding: 4px;
+  gap: 4px;
 }
 
 .retro-nav-tab {
-  padding: 6px 12px;
-  border: 2px outset var(--retro-gray);
-  border-bottom: none;
-  background: var(--retro-gray);
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
   cursor: pointer;
-  font-weight: bold;
-  font-size: 11px;
-  color: black;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-secondary);
+  transition: all 0.2s ease;
 }
 
 .retro-nav-tab.active {
-  border: 2px inset var(--retro-gray);
-  border-bottom: 2px solid var(--retro-gray);
-  background: hsl(0, 0%, 88%);
+  background: white;
+  color: var(--text-primary);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .retro-nav-tab:hover:not(.active) {
-  background: hsl(0, 0%, 82%);
+  background: rgba(255, 255, 255, 0.5);
+  color: var(--text-primary);
 }
 
 .retro-status-bar {
@@ -253,25 +305,47 @@
 
 .retro-logo {
   font-family: 'Press Start 2P', monospace;
-  font-size: 14px;
-  color: var(--retro-blue);
-  text-shadow: 2px 2px 0px var(--retro-gray);
-  margin-bottom: 16px;
+  font-size: 28px;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 24px;
+  text-align: center;
 }
 
 .retro-progress-bar {
   width: 100%;
-  height: 20px;
-  border: 2px inset var(--retro-gray);
-  background: var(--retro-gray);
-  margin: 8px 0;
+  height: 8px;
+  border-radius: 12px;
+  background: hsl(220, 13%, 91%);
+  margin: 12px 0;
   position: relative;
+  overflow: hidden;
 }
 
 .retro-progress-fill {
-  background: linear-gradient(90deg, var(--retro-blue) 0%, var(--retro-blue-light) 100%);
+  background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
   height: 100%;
+  border-radius: 12px;
   transition: width 0.3s ease;
+  position: relative;
+}
+
+.retro-progress-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
 }
 
 .retro-loading-screen {
@@ -305,60 +379,83 @@
 
 .retro-drag-item {
   background: white;
-  border: 2px outset var(--retro-gray);
-  padding: 8px;
-  margin: 4px 0;
+  border: 2px solid hsl(220, 13%, 91%);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 8px 0;
   cursor: move;
   user-select: none;
   position: relative;
-  color: black;
+  color: var(--text-primary);
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
 
 .retro-drag-item:hover {
-  background: hsl(0, 0%, 94%);
+  background: hsl(220, 16%, 98%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  border-color: var(--accent-blue);
 }
 
 .retro-drag-item.dragging {
-  opacity: 0.5;
-  border: 2px inset var(--retro-gray);
+  opacity: 0.7;
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  z-index: 1000;
 }
 
 .retro-rank-number {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  background: var(--retro-blue);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--accent-blue) 0%, var(--accent-purple) 100%);
   color: white;
-  text-align: center;
-  line-height: 20px;
-  font-weight: bold;
-  font-size: 10px;
-  margin-right: 8px;
-  border: 1px outset var(--retro-blue);
+  font-weight: 700;
+  font-size: 14px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(66, 153, 225, 0.3);
+  flex-shrink: 0;
 }
 
 .retro-results-bar {
-  background: var(--retro-gray);
-  border: 2px inset var(--retro-gray);
-  height: 20px;
-  margin: 4px 0;
+  background: hsl(220, 13%, 91%);
+  border-radius: 12px;
+  height: 8px;
+  margin: 12px 0;
   position: relative;
+  overflow: hidden;
 }
 
 .retro-results-fill {
-  background: linear-gradient(90deg, var(--retro-green) 0%, var(--retro-green-light) 100%);
   height: 100%;
-  transition: width 0.5s ease;
+  border-radius: 12px;
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.retro-results-fill::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.3) 50%, transparent 100%);
+  animation: shimmer 2s infinite;
 }
 
 .retro-results-label {
-  position: absolute;
-  left: 4px;
-  top: 2px;
-  font-size: 10px;
-  font-weight: bold;
-  color: #000;
-  z-index: 1;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  display: block;
 }
 
 @media (max-width: 768px) {
