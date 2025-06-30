@@ -270,9 +270,7 @@ export default function Home() {
             
             <div className="retro-fieldset">
               <legend>What is TripPoll 95?</legend>
-              <div style={{ color: 'var(--text-primary)', lineHeight: '1.6', marginBottom: '16px' }}>
-                A fun retro-style app for deciding where to go with your friends! No more endless group chats trying to pick a destination.
-              </div>
+              <div style={{ color: 'var(--text-primary)', lineHeight: '1.6', marginBottom: '16px' }}>A retro-style poll app for figuring out your next trip with friends</div>
               <div style={{ color: 'var(--text-primary)', lineHeight: '1.6' }}>
                 Everyone ranks their preferences, and our smart voting system finds the option that makes the most people happy.
               </div>
