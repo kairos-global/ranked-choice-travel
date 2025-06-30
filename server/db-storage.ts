@@ -1,16 +1,8 @@
 
-import { drizzle } from "drizzle-orm/neon-serverless";
-import { neon } from "@neondatabase/serverless";
 import { polls, votes, type Poll, type Vote, type InsertPoll, type InsertVote } from "@shared/schema";
-import { eq } from "drizzle-orm";
+import { eq, and } from "drizzle-orm";
 import type { IStorage } from "./storage";
-
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL environment variable is required");
-}
-
-const sql = neon(process.env.DATABASE_URL);
-const db = drizzle(sql);
+import { db } from "./db";
 
 export class DbStorage implements IStorage {
   async createPoll(insertPoll: InsertPoll): Promise<{ poll: Poll; adminKey: string }> {
@@ -18,8 +10,12 @@ export class DbStorage implements IStorage {
     const adminKey = this.generateAdminKey();
     
     const [poll] = await db.insert(polls).values({
-      ...insertPoll,
       id,
+      title: insertPoll.title,
+      description: insertPoll.description,
+      options: insertPoll.options,
+      allowEdits: insertPoll.allowEdits,
+      showResults: insertPoll.showResults,
       adminKey,
     }).returning();
     
@@ -28,7 +24,7 @@ export class DbStorage implements IStorage {
 
   async getPoll(id: string): Promise<Poll | undefined> {
     const [poll] = await db.select().from(polls).where(eq(polls.id, id));
-    return poll;
+    return poll || undefined;
   }
 
   async updatePoll(id: string, updates: Partial<InsertPoll>): Promise<Poll | undefined> {
@@ -36,7 +32,7 @@ export class DbStorage implements IStorage {
       .set(updates)
       .where(eq(polls.id, id))
       .returning();
-    return poll;
+    return poll || undefined;
   }
 
   async closePoll(id: string, adminKey: string): Promise<boolean> {
@@ -54,10 +50,16 @@ export class DbStorage implements IStorage {
   }
 
   async createVote(insertVote: InsertVote, voterIp?: string): Promise<Vote> {
-    const [vote] = await db.insert(votes).values({
-      ...insertVote,
-      voterIp,
-    }).returning();
+    const voteData: any = {
+      pollId: insertVote.pollId,
+      rankings: insertVote.rankings,
+    };
+    
+    if (voterIp) {
+      voteData.voterIp = voterIp;
+    }
+    
+    const [vote] = await db.insert(votes).values(voteData).returning();
     
     return vote;
   }
@@ -67,12 +69,11 @@ export class DbStorage implements IStorage {
   }
 
   async hasVoted(pollId: string, voterIp: string): Promise<boolean> {
-    const [vote] = await db.select()
+    const voteList = await db.select()
       .from(votes)
-      .where(eq(votes.pollId, pollId))
-      .where(eq(votes.voterIp, voterIp));
+      .where(and(eq(votes.pollId, pollId), eq(votes.voterIp, voterIp)));
     
-    return !!vote;
+    return voteList.length > 0;
   }
 
   private generatePollId(): string {

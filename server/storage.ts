@@ -111,16 +111,30 @@ export class MemStorage implements IStorage {
 // Use PostgreSQL storage if DATABASE_URL is available, otherwise fallback to memory
 let storage: IStorage;
 
-try {
-  if (process.env.DATABASE_URL) {
-    const { DbStorage } = await import("./db-storage");
-    storage = new DbStorage();
-  } else {
-    storage = new MemStorage();
+async function initializeStorage(): Promise<IStorage> {
+  try {
+    if (process.env.DATABASE_URL) {
+      const { DbStorage } = await import("./db-storage");
+      return new DbStorage();
+    } else {
+      return new MemStorage();
+    }
+  } catch (error) {
+    console.warn("Failed to initialize database storage, falling back to memory storage:", error);
+    return new MemStorage();
   }
-} catch (error) {
-  console.warn("Failed to initialize database storage, falling back to memory storage:", error);
-  storage = new MemStorage();
 }
+
+// Initialize storage - this will be called when the module is imported
+const storagePromise = initializeStorage();
+storage = new MemStorage(); // Temporary fallback
+
+// Replace with actual storage once initialized
+storagePromise.then(s => {
+  storage = s;
+  console.log(`Storage initialized: ${process.env.DATABASE_URL ? 'Database' : 'Memory'}`);
+}).catch(error => {
+  console.error("Storage initialization failed:", error);
+});
 
 export { storage };
